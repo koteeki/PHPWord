@@ -32,6 +32,25 @@ use PhpOffice\PhpWord\Writer\Word2007\Style\Tab as TabStyleWriter;
  */
 class TOC extends AbstractElement
 {
+    private $_titles = [];
+    private $_page = 1;
+
+    public function addTocTitle($relId, $title, $nPages = 1, $visible = true)
+    {
+        $this->_titles[$relId] = [
+            'title' => $title,
+            'page' => $this->_page,
+            'visible' => $visible,
+        ];
+
+        $this->_page += $nPages;
+    }
+
+    public function getTocTitle($relId)
+    {
+        return isset($this->_titles[$relId]) ? $this->_titles[$relId] : false;
+    }
+
     /**
      * Write element.
      *
@@ -95,16 +114,17 @@ class TOC extends AbstractElement
         $xmlWriter->writeAttribute('w:history', '1');
 
         // Title text
+        $titleText = $this->getTocTitle($rId) ?: $title->getText();
         $xmlWriter->startElement('w:r');
         if ($isObject) {
             $styleWriter = new FontStyleWriter($xmlWriter, $fontStyle);
             $styleWriter->write();
         }
         if (Settings::isOutputEscapingEnabled()) {
-            $xmlWriter->writeElement('w:t', $title->getText());
+            $xmlWriter->writeElement('w:t', $titleText);
         } else {
             $xmlWriter->startElement('w:t');
-            $xmlWriter->writeRaw($title->getText());
+            $xmlWriter->writeRaw($titleText);
             $xmlWriter->endElement();
         }
         $xmlWriter->endElement(); // w:r
