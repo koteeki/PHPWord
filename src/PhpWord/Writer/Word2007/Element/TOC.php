@@ -75,10 +75,17 @@ class TOC extends AbstractElement
      */
     private function writeTitle(XMLWriter $xmlWriter, TOCElement $element, $title, $writeFieldMark)
     {
+        $rId = $title->getRelationId();
+        $titleText = $element->getTocTitle($rId);
+
+        if (!$titleText) {
+            return;
+        }
+
         $tocStyle = $element->getStyleTOC();
         $fontStyle = $element->getStyleFont();
         $isObject = ($fontStyle instanceof Font) ? true : false;
-        $rId = $title->getRelationId();
+
         $indent = ($title->getDepth() - 1) * $tocStyle->getIndent();
 
         $xmlWriter->startElement('w:p');
@@ -95,7 +102,6 @@ class TOC extends AbstractElement
         $xmlWriter->writeAttribute('w:history', '1');
 
         // Title text
-        $titleText = $element->getTocTitle($rId) ?: $title->getText();
         $xmlWriter->startElement('w:r');
         if ($isObject) {
             $styleWriter = new FontStyleWriter($xmlWriter, $fontStyle);

@@ -59,14 +59,30 @@ class TOC extends AbstractElement
 
     public function addTocTitle($relId, $title, $nPages = 1)
     {
-        $this->_titles[$relId] = $title . ' .................................................... Page ' . $this->_page;
+        $hasAdded = array_search($title, array_column($this->_titles, 'title'));
+
+        if ($hasAdded === false) {
+            $this->_titles[$relId] = [
+                'title' => $title,
+                'page' => $this->_page,
+            ];
+        }
 
         $this->skipPages($nPages);
     }
 
     public function getTocTitle($relId)
     {
-        return isset($this->_titles[$relId]) ? $this->_titles[$relId] : false;
+        $page = isset($this->_titles[$relId]) ? $this->_titles[$relId]['page'] : false;
+
+        if (!$page) {
+            return false;
+        }
+
+        $title = $this->_titles[$relId]['title'];
+        $page  = 'Page ' . $page;
+
+        return "{$title}{$page}";
     }
 
     public function skipPages($nPages)
