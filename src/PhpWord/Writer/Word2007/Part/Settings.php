@@ -106,7 +106,7 @@ class Settings extends AbstractPart
             'w:themeFontLang' => array('@attributes' => array('w:val' => 'en-US')),
             'w:decimalSymbol' => array('@attributes' => array('w:val' => '.')),
             'w:listSeparator' => array('@attributes' => array('w:val' => ';')),
-            'w:compat' => '',
+            'w:compat' => array(),
             'm:mathPr' => array(
                 'm:mathFont' => array('@attributes' => array('m:val' => 'Cambria Math')),
                 'm:brkBin' => array('@attributes' => array('m:val' => 'before')),
@@ -170,7 +170,7 @@ class Settings extends AbstractPart
     {
         $compatibility = $this->getParentWriter()->getPhpWord()->getCompatibility();
         if ($compatibility->getOoxmlVersion() !== null) {
-            $this->settings['w:compat'] = array('@attributes' => array(
+            $this->settings['w:compat']['w:compatSetting'] = array('@attributes' => array(
                 'w:name'    => 'compatibilityMode',
                 'w:uri'     => 'http://schemas.microsoft.com/office/word',
                 'w:val'     => $compatibility->getOoxmlVersion(),
